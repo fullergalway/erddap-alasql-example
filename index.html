@@ -55,7 +55,8 @@ fetch("https://erddap.marine.ie/erddap/tabledap/pirs_project_data.jsonlKVP?latit
             SUM(project_grant_aid_value) AS total_funding,
             count(*) as number_of_projects FROM ? 
             GROUP BY year_awarded
-            ORDER BY year_awarded`,
+            ORDER BY year
+`,
         [data]);
 
     let eu_breakdown = alasql(`
@@ -73,7 +74,7 @@ fetch("https://erddap.marine.ie/erddap/tabledap/pirs_project_data.jsonlKVP?latit
             SUM(project_grant_aid_value) AS total_funding,
             count(*) as number_of_projects FROM ? 
             GROUP BY primary_research_theme, year_awarded, funding_source
-            ORDER BY primary_research_theme, year_awarded, funding_source
+            ORDER BY primary_research_theme, year, funding_source DESC
             `,
             [data]);
     document.getElementById("year_totals").innerHTML = year_totals.map(r=>`<tr><td>${r.year}</td><td>${r.number_of_projects}</td><td>€${r.total_funding.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td></tr>`).join("");
